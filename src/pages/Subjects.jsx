@@ -113,8 +113,8 @@ export default function Subjects() {
                 <input type="text" className="input-field" value={editName} onChange={e => setEditName(e.target.value)} />
               </div>
               <div className="mt-4">
-                <label className="text-muted block mb-2">کتب کی تعداد</label>
-                <input type="number" className="input-field" value={editBooks} onChange={e => setEditBooks(e.target.value)} />
+                <label className="text-muted block mb-2">کتاب کا نام</label>
+                <input type="text" className="input-field" value={editBooks} onChange={e => setEditBooks(e.target.value)} />
               </div>
               <div className="mt-4">
                 <label className="text-muted block mb-2">کل صفحات</label>
@@ -149,7 +149,7 @@ export default function Subjects() {
           <h3 className="mb-4" style={{ fontSize: '1.4rem' }}>نیا مضمون شامل کریں</h3>
           <form onSubmit={handleAddSubject} className="flex gap-4" style={{ flexWrap: 'wrap' }}>
             <input type="text" placeholder="مضمون کا نام" className="input-field" style={{ flex: '1 1 200px' }} value={newName} onChange={e => setNewName(e.target.value)} required />
-            <input type="number" placeholder="کتب کی تعداد" className="input-field" style={{ flex: '1 1 120px' }} value={newBooks} onChange={e => setNewBooks(e.target.value)} required />
+            <input type="text" placeholder="کتاب کا نام" className="input-field" style={{ flex: '1 1 120px' }} value={newBooks} onChange={e => setNewBooks(e.target.value)} required />
             <input type="number" placeholder="کل صفحات" className="input-field" style={{ flex: '1 1 120px' }} value={newPages} onChange={e => setNewPages(e.target.value)} required />
             <button type="submit" className="btn btn-primary">محفوظ کریں</button>
           </form>
