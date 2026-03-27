@@ -45,7 +45,7 @@ function NavLinks() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/darajaat">
       <div className="container flex-col" style={{ minHeight: '100vh', display: 'flex' }}>
         <header className="flex justify-between items-center my-8 glass-panel animate-fade-in" style={{ flexWrap: 'wrap', gap: '1rem' }}>
           <div className="flex items-center gap-4">
