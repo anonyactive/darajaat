@@ -65,7 +65,10 @@ function NavLinks() {
 function AppContent() {
   return (
     <div className="container flex-col" style={{ minHeight: '100vh', display: 'flex' }}>
-      <header className="flex justify-between items-center my-8 glass-panel animate-fade-in" style={{ flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="text-center animate-fade-in" style={{ padding: '0.7rem 0', background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.15), transparent)', fontSize: '2rem', letterSpacing: '4px', color: 'var(--primary-color)', marginTop: '1.5rem', borderRadius: '12px' }}>
+        بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+      </div>
+      <header className="flex justify-between items-center my-4 glass-panel animate-fade-in" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div className="flex items-center gap-4">
           <div style={{ background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))', padding: '0.6rem', borderRadius: '14px', boxShadow: '0 6px 20px rgba(16, 185, 129, 0.3)' }}>
             <BookOpen size={32} color="#fff" />
