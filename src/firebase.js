@@ -2,14 +2,14 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// TODO: Replace this with your actual Firebase project configuration from the Firebase Console
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCprAN5XsCtf256D2sa4eUl7QJAXLIPVJU",
+  authDomain: "darajaatapp.firebaseapp.com",
+  projectId: "darajaatapp",
+  storageBucket: "darajaatapp.firebasestorage.app",
+  messagingSenderId: "252226300695",
+  appId: "1:252226300695:web:f6a75f550401410af52552",
+  measurementId: "G-PJ131YSSWJ"
 };
 
 // Initialize Firebase
