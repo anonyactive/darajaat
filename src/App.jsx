@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { BookOpen, Users, BarChart3, Settings } from 'lucide-react';
 
 import Dashboard from './pages/Dashboard';
@@ -45,7 +45,7 @@ function NavLinks() {
 
 function App() {
   return (
-    <BrowserRouter basename="/darajaat">
+    <HashRouter>
       <div className="container flex-col" style={{ minHeight: '100vh', display: 'flex' }}>
         <header className="flex justify-between items-center my-8 glass-panel animate-fade-in" style={{ flexWrap: 'wrap', gap: '1rem' }}>
           <div className="flex items-center gap-4">
@@ -71,7 +71,7 @@ function App() {
           <p style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-main)' }}>درجات - طلباء کے لیے ایک بہترین ساتھی | <Link to="/collab" style={{ fontWeight: 'bold' }}>ہم جماعتوں کے ساتھ جڑیں</Link></p>
         </footer>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
