@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from 'firebase/auth';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,6 @@ export default function Login() {
     e.preventDefault();
     setError('');
     
-    // Safety check just in case config is missing
     if (!auth.app.options.apiKey || auth.app.options.apiKey === 'YOUR_API_KEY') {
       setError('ایپ میں فائر بیس (Firebase) منسلک نہیں ہے۔ آپ کو Firebase Keys درج کرنا ہوں گی۔');
       return;
@@ -31,6 +30,17 @@ export default function Login() {
       navigate('/');
     } catch (err) {
       setError('ای میل یا پاس ورڈ غلط ہے۔');
+      console.error(err);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate('/');
+    } catch (err) {
+      setError('گوگل سائن ان میں مسلہ: ' + err.message);
       console.error(err);
     }
   };
@@ -82,6 +92,17 @@ export default function Login() {
           {isRegistering ? 'رجسٹر کریں' : 'لاگ ان'}
         </button>
       </form>
+
+      <div style={{ display: 'flex', alignItems: 'center', margin: '1.5rem 0' }}>
+        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+        <span style={{ padding: '0 1rem', color: 'var(--text-muted)' }}>یا</span>
+        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+      </div>
+
+      <button type="button" onClick={handleGoogleLogin} className="btn w-full flex items-center justify-center gap-2" style={{ width: '100%', background: '#fff', color: '#000', border: 'none', fontWeight: 'bold' }}>
+        <img src="https://www.google.com/favicon.ico" alt="Google" style={{ width: '20px' }} />
+        گوگل کے ذریعے لاگ ان کریں
+      </button>
 
       <p className="text-center mt-6 text-muted" style={{ cursor: 'pointer', fontSize: '1.1rem' }} onClick={() => setIsRegistering(!isRegistering)}>
         {isRegistering ? 'پہلے سے اکاؤنٹ ہے؟ لاگ ان کریں' : 'اکاؤنٹ نہیں ہے؟ نیا بنائیں'}
