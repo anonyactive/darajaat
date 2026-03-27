@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Subjects from './pages/Subjects';
 import Collab from './pages/Collab';
 import Login from './pages/Login';
+import SettingsView from './pages/Settings';
 
 function NavLinks() {
   const location = useLocation()
@@ -81,7 +82,7 @@ function AppContent() {
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/collab" element={<Collab />} />
           <Route path="/add" element={<Subjects />} /> {/* Fallback for dashboard CTA */}
-          <Route path="/settings" element={<div className="glass-panel text-center animate-fade-in py-8"><Settings size={64} color="var(--text-muted)" style={{ margin: '0 auto 1.5rem', opacity: 0.5 }} /><h2 style={{ fontSize: '2rem' }}>ترتیبات</h2><p className="text-muted mt-4 text-lg">جلد آرہا ہے...</p></div>} />
+          <Route path="/settings" element={<SettingsView />} />
         </Routes>
       </main>
       
