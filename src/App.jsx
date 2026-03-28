@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut, GraduationCap } from 'lucide-react';
+import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut, GraduationCap, Shield } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
@@ -10,10 +10,11 @@ import Collab from './pages/Collab';
 import Login from './pages/Login';
 import SettingsView from './pages/Settings';
 import Classes from './pages/Classes';
+import SuperAdmin from './pages/SuperAdmin';
 
 function NavLinks() {
   const location = useLocation()
-  const { user } = useAuth();
+  const { user, isSuperAdmin } = useAuth();
   
   const links = [
     { path: '/', label: 'ڈیش بورڈ', icon: <BarChart3 size={20} />, public: true },
@@ -26,9 +27,7 @@ function NavLinks() {
   return (
     <nav className="flex gap-4 items-center" style={{ overflowX: 'auto' }}>
       {links.map((link) => {
-        // Hide protected links if not logged in
         if (!link.public && !user) return null;
-
         const isActive = location.pathname === link.path || (location.pathname === '/add' && link.path === '/subjects');
         return (
           <Link 
@@ -50,6 +49,19 @@ function NavLinks() {
           </Link>
         )
       })}
+
+      {/* SuperAdmin exclusive link */}
+      {isSuperAdmin && (
+        <Link to="/superadmin" className="flex items-center gap-2" style={{
+          color: location.pathname === '/superadmin' ? 'var(--danger)' : 'var(--text-muted)',
+          fontWeight: location.pathname === '/superadmin' ? 'bold' : 'normal',
+          background: location.pathname === '/superadmin' ? 'rgba(239,68,68,0.1)' : 'transparent',
+          padding: '0.6rem 1.2rem', borderRadius: '12px', transition: 'all 0.3s ease', whiteSpace: 'nowrap'
+        }}>
+          <Shield size={20} />
+          <span style={{ fontSize: '1.1rem' }}>سپر ایڈمن</span>
+        </Link>
+      )}
       
       {!user ? (
         <Link to="/login" className="btn btn-primary ml-4" style={{ padding: '0.5rem 1rem', fontSize: '1rem' }}>
@@ -89,6 +101,7 @@ function AppContent() {
           <Route path="/collab" element={<Collab />} />
           <Route path="/add" element={<Subjects />} />
           <Route path="/settings" element={<SettingsView />} />
+          <Route path="/superadmin" element={<SuperAdmin />} />
         </Routes>
       </main>
       
