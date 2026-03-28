@@ -14,12 +14,14 @@ export default function Subjects() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newBooks, setNewBooks] = useState('');
+  const [newSyllabus, setNewSyllabus] = useState('');
   const [newPages, setNewPages] = useState('');
 
   // Edit Modal State
   const [editingSubject, setEditingSubject] = useState(null);
   const [editName, setEditName] = useState('');
   const [editBooks, setEditBooks] = useState('');
+  const [editSyllabus, setEditSyllabus] = useState('');
   const [editPages, setEditPages] = useState('');
   const [editReadPages, setEditReadPages] = useState('');
 
@@ -45,14 +47,15 @@ export default function Subjects() {
     try {
       await addDoc(collection(db, 'subjects'), {
         name: newName,
-        booksCount: parseInt(newBooks) || 0,
+        bookName: newBooks,
+        syllabus: newSyllabus,
         totalPages: parseInt(newPages) || 0,
         readPages: 0,
         createdBy: user.uid,
         createdAt: serverTimestamp()
       });
       setShowAddForm(false);
-      setNewName(''); setNewBooks(''); setNewPages('');
+      setNewName(''); setNewBooks(''); setNewSyllabus(''); setNewPages('');
       fetchSubjects();
     } catch (error) { console.error("Error adding subject", error); }
   };
@@ -60,7 +63,8 @@ export default function Subjects() {
   const openEditModal = (sub) => {
     setEditingSubject(sub);
     setEditName(sub.name || '');
-    setEditBooks(sub.booksCount || '');
+    setEditBooks(sub.bookName || '');
+    setEditSyllabus(sub.syllabus || '');
     setEditPages(sub.totalPages || '');
     setEditReadPages(sub.readPages || '');
   };
@@ -70,7 +74,8 @@ export default function Subjects() {
     try {
       await updateDoc(doc(db, 'subjects', editingSubject.id), {
         name: editName,
-        booksCount: parseInt(editBooks) || 0,
+        bookName: editBooks,
+        syllabus: editSyllabus,
         totalPages: parseInt(editPages) || 0,
         readPages: parseInt(editReadPages) || 0,
       });
@@ -117,6 +122,10 @@ export default function Subjects() {
                 <input type="text" className="input-field" value={editBooks} onChange={e => setEditBooks(e.target.value)} />
               </div>
               <div className="mt-4">
+                <label className="text-muted block mb-2">نصاب (Syllabus)</label>
+                <textarea className="input-field" rows={3} style={{ resize: 'vertical', lineHeight: '1.6' }} placeholder="نصاب کی تفصیل درج کریں..." value={editSyllabus} onChange={e => setEditSyllabus(e.target.value)} />
+              </div>
+              <div className="mt-4">
                 <label className="text-muted block mb-2">کل صفحات</label>
                 <input type="number" className="input-field" value={editPages} onChange={e => setEditPages(e.target.value)} />
               </div>
@@ -149,7 +158,8 @@ export default function Subjects() {
           <h3 className="mb-4" style={{ fontSize: '1.4rem' }}>نیا مضمون شامل کریں</h3>
           <form onSubmit={handleAddSubject} className="flex gap-4" style={{ flexWrap: 'wrap' }}>
             <input type="text" placeholder="مضمون کا نام" className="input-field" style={{ flex: '1 1 200px' }} value={newName} onChange={e => setNewName(e.target.value)} required />
-            <input type="text" placeholder="کتاب کا نام" className="input-field" style={{ flex: '1 1 120px' }} value={newBooks} onChange={e => setNewBooks(e.target.value)} required />
+            <input type="text" placeholder="کتاب کا نام" className="input-field" style={{ flex: '1 1 150px' }} value={newBooks} onChange={e => setNewBooks(e.target.value)} />
+            <input type="text" placeholder="نصاب مثلاً: باب 1 تا 5" className="input-field" style={{ flex: '2 1 200px' }} value={newSyllabus} onChange={e => setNewSyllabus(e.target.value)} />
             <input type="number" placeholder="کل صفحات" className="input-field" style={{ flex: '1 1 120px' }} value={newPages} onChange={e => setNewPages(e.target.value)} required />
             <button type="submit" className="btn btn-primary">محفوظ کریں</button>
           </form>
