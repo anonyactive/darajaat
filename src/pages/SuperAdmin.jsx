@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 function generateCode() {
-  return 'CLS-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+  return 'DRJ-' + Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
 // ─── Tab: Stats Overview ─────────────────────────────────────────────────────
@@ -43,14 +43,18 @@ function UsersTab({ users, onRefresh }) {
   const ROLES = ['user', 'admin', 'superadmin'];
 
   const updateRole = async (uid, newRole) => {
-    await updateDoc(doc(db, 'users', uid), { role: newRole });
-    onRefresh();
+    try {
+      await updateDoc(doc(db, 'users', uid), { role: newRole });
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   const deleteUser = async (uid) => {
     if (!window.confirm('کیا آپ اس صارف کا ڈیٹا حذف کرنا چاہتے ہیں؟')) return;
-    await deleteDoc(doc(db, 'users', uid));
-    onRefresh();
+    try {
+      await deleteDoc(doc(db, 'users', uid));
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   return (
@@ -93,26 +97,32 @@ function ClassesTab({ classes, onRefresh }) {
   const createClass = async (e) => {
     e.preventDefault();
     const code = generateCode();
-    await addDoc(collection(db, 'classes'), { name: newName.trim(), code, createdAt: serverTimestamp() });
-    setNewName('');
-    onRefresh();
+    try {
+      await addDoc(collection(db, 'classes'), { name: newName.trim(), code, createdAt: serverTimestamp() });
+      setNewName('');
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   const saveEdit = async (id) => {
-    await updateDoc(doc(db, 'classes', id), { name: editName });
-    setEditId(null);
-    onRefresh();
+    try {
+      await updateDoc(doc(db, 'classes', id), { name: editName });
+      setEditId(null);
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   const deleteClass = async (id) => {
-    if (!window.confirm('یہ کلاس حذف کریں؟')) return;
-    await deleteDoc(doc(db, 'classes', id));
-    onRefresh();
+    if (!window.confirm('یہ درجہ حذف کریں؟')) return;
+    try {
+      await deleteDoc(doc(db, 'classes', id));
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   return (
     <div>
-      <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>تمام کلاسز ({classes.length})</h3>
+      <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>تمام درجات ({classes.length})</h3>
       <form onSubmit={createClass} className="glass-panel flex gap-4 mb-6" style={{ flexWrap: 'wrap', border: '2px dashed var(--primary-color)' }}>
         <input type="text" className="input-field" style={{ flex: '1 1 200px' }} placeholder="نئی کلاس کا نام" value={newName} onChange={e => setNewName(e.target.value)} required />
         <button type="submit" className="btn btn-primary"><Plus size={18} /> بنائیں</button>
@@ -155,20 +165,24 @@ function SubjectsTab({ subjects, classes, onRefresh }) {
 
   const deleteSubject = async (id) => {
     if (!window.confirm('یہ مضمون حذف کریں؟')) return;
-    await deleteDoc(doc(db, 'subjects', id));
-    onRefresh();
+    try {
+      await deleteDoc(doc(db, 'subjects', id));
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   const saveEdit = async (id) => {
-    await updateDoc(doc(db, 'subjects', id), {
-      name: editData.name,
-      bookName: editData.bookName,
-      syllabus: editData.syllabus,
-      totalPages: parseInt(editData.totalPages) || 0,
-      readPages: parseInt(editData.readPages) || 0,
-    });
-    setEditId(null);
-    onRefresh();
+    try {
+      await updateDoc(doc(db, 'subjects', id), {
+        name: editData.name,
+        bookName: editData.bookName,
+        syllabus: editData.syllabus,
+        totalPages: parseInt(editData.totalPages) || 0,
+        readPages: parseInt(editData.readPages) || 0,
+      });
+      setEditId(null);
+      onRefresh();
+    } catch (e) { alert('خطا: ' + e.message); }
   };
 
   const getClassName = (classId) => classes.find(c => c.id === classId)?.name || classId;
