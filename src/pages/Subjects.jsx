@@ -4,8 +4,6 @@ import { db, auth } from '../firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
@@ -92,41 +90,76 @@ export default function Subjects() {
     }
   };
 
-  const handleDownloadPDF = () => {
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    
-    // Header
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(18);
-    pdf.text('Darajaat - Syllabus Report', 148, 15, { align: 'center' });
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text(`Class: ${activeClassName || 'N/A'}`, 148, 22, { align: 'center' });
-    pdf.text(`Generated: ${new Date().toLocaleDateString('ur-PK')}`, 148, 28, { align: 'center' });
+  const handleDownloadPDF = async () => {
+    const { default: html2canvas } = await import('html2canvas');
+    const { default: jsPDF } = await import('jspdf');
 
-    const rows = subjects.map((sub, i) => {
-      const progress = sub.totalPages > 0 ? Math.round(((sub.readPages || 0) / sub.totalPages) * 100) : 0;
-      return [
-        i + 1,
-        sub.name || '-',
-        sub.bookName || '-',
-        sub.syllabus || '-',
-        `${sub.readPages || 0} / ${sub.totalPages || 0}`,
-        `${progress}%`
-      ];
-    });
+    // Build a hidden HTML table with full Urdu support
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed; top: -9999px; left: -9999px;
+      width: 1100px; padding: 40px;
+      background: #ffffff; color: #111111;
+      font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+      direction: rtl; text-align: right;
+    `;
 
-    autoTable(pdf, {
-      startY: 35,
-      head: [['#', 'Subject (مضمون)', 'Book (کتاب)', 'Syllabus (نصاب)', 'Pages (صفحات)', 'Progress']],
-      body: rows,
-      styles: { fontSize: 10, cellPadding: 4 },
-      headStyles: { fillColor: [16, 185, 129], textColor: '#fff', fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [240, 255, 248] },
-      columnStyles: { 2: { cellWidth: 50 }, 3: { cellWidth: 80 } }
-    });
+    container.innerHTML = `
+      <div style="text-align:center; margin-bottom:24px;">
+        <h1 style="font-size:28px; color:#059669; margin:0;">درجات - نصاب رپورٹ</h1>
+        <p style="font-size:15px; color:#555; margin:6px 0 0;">کلاس: ${activeClassName || ''} &nbsp;|&nbsp; تاریخ: ${new Date().toLocaleDateString('en-PK')}</p>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:15px;">
+        <thead>
+          <tr style="background:#059669; color:#fff;">
+            <th style="padding:10px 14px; border:1px solid #ddd;">#</th>
+            <th style="padding:10px 14px; border:1px solid #ddd;">مضمون</th>
+            <th style="padding:10px 14px; border:1px solid #ddd;">کتاب</th>
+            <th style="padding:10px 14px; border:1px solid #ddd;">نصاب</th>
+            <th style="padding:10px 14px; border:1px solid #ddd;">صفحات</th>
+            <th style="padding:10px 14px; border:1px solid #ddd;">پیش رفت</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${subjects.map((sub, i) => {
+            const progress = sub.totalPages > 0 ? Math.round(((sub.readPages || 0) / sub.totalPages) * 100) : 0;
+            const bg = i % 2 === 0 ? '#f0fff8' : '#ffffff';
+            return `<tr style="background:${bg};">
+              <td style="padding:10px 14px; border:1px solid #ddd; text-align:center;">${i + 1}</td>
+              <td style="padding:10px 14px; border:1px solid #ddd;">${sub.name || '-'}</td>
+              <td style="padding:10px 14px; border:1px solid #ddd;">${sub.bookName || '-'}</td>
+              <td style="padding:10px 14px; border:1px solid #ddd;">${sub.syllabus || '-'}</td>
+              <td style="padding:10px 14px; border:1px solid #ddd; text-align:center;">${sub.readPages || 0} / ${sub.totalPages || 0}</td>
+              <td style="padding:10px 14px; border:1px solid #ddd; text-align:center; font-weight:bold; color:#059669;">${progress}%</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
 
-    pdf.save(`Darajaat-Syllabus-${activeClassName || 'Report'}.pdf`);
+    document.body.appendChild(container);
+
+    try {
+      const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const ratio = canvas.width / canvas.height;
+      const imgH = pageW / ratio;
+      
+      // If content is taller than one page, split across pages
+      let pos = 0;
+      while (pos < imgH) {
+        if (pos > 0) pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, -pos, pageW, imgH);
+        pos += pageH;
+      }
+
+      pdf.save(`Darajaat-${activeClassName || 'Syllabus'}.pdf`);
+    } finally {
+      document.body.removeChild(container);
+    }
   };
 
   if (!user) {
