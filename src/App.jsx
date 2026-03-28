@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut } from 'lucide-react';
+import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut, GraduationCap } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
@@ -9,6 +9,7 @@ import Subjects from './pages/Subjects';
 import Collab from './pages/Collab';
 import Login from './pages/Login';
 import SettingsView from './pages/Settings';
+import Classes from './pages/Classes';
 
 function NavLinks() {
   const location = useLocation()
@@ -16,6 +17,7 @@ function NavLinks() {
   
   const links = [
     { path: '/', label: 'ڈیش بورڈ', icon: <BarChart3 size={20} />, public: true },
+    { path: '/classes', label: 'کلاسز', icon: <GraduationCap size={20} />, public: false },
     { path: '/subjects', label: 'مضامین', icon: <BookOpen size={20} />, public: false },
     { path: '/collab', label: 'ہم جماعت', icon: <Users size={20} />, public: false },
     { path: '/settings', label: 'ترتیبات', icon: <Settings size={20} />, public: false },
@@ -82,9 +84,10 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/classes" element={<Classes />} />
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/collab" element={<Collab />} />
-          <Route path="/add" element={<Subjects />} /> {/* Fallback for dashboard CTA */}
+          <Route path="/add" element={<Subjects />} />
           <Route path="/settings" element={<SettingsView />} />
         </Routes>
       </main>
