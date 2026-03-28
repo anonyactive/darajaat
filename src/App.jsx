@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut, GraduationCap, Shield } from 'lucide-react';
+import { BookOpen, Users, BarChart3, Settings, LogIn, LogOut, GraduationCap, Shield, NotebookPen } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import SettingsView from './pages/Settings';
 import Classes from './pages/Classes';
 import SuperAdmin from './pages/SuperAdmin';
+import Diary from './pages/Diary';
 
 function NavLinks() {
   const location = useLocation()
@@ -18,8 +19,9 @@ function NavLinks() {
   
   const links = [
     { path: '/', label: 'ڈیش بورڈ', icon: <BarChart3 size={20} />, public: true },
-    { path: '/classes', label: 'کلاسز', icon: <GraduationCap size={20} />, public: false },
+    { path: '/classes', label: 'درجات', icon: <GraduationCap size={20} />, public: false },
     { path: '/subjects', label: 'مضامین', icon: <BookOpen size={20} />, public: false },
+    { path: '/diary', label: 'ڈائری', icon: <NotebookPen size={20} />, public: false },
     { path: '/collab', label: 'ہم جماعت', icon: <Users size={20} />, public: false },
     { path: '/settings', label: 'ترتیبات', icon: <Settings size={20} />, public: false },
   ]
@@ -98,6 +100,7 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/classes" element={<Classes />} />
           <Route path="/subjects" element={<Subjects />} />
+          <Route path="/diary" element={<Diary />} />
           <Route path="/collab" element={<Collab />} />
           <Route path="/add" element={<Subjects />} />
           <Route path="/settings" element={<SettingsView />} />
