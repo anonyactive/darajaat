@@ -46,8 +46,8 @@ export default function Dashboard() {
   const statCards = [
     { label: 'کل مضامین', value: stats.totalSubjects, icon: <BookOpen />, color: 'var(--primary-color)' },
     { label: 'پڑھے گئے صفحات', value: stats.readPages, icon: <CheckCircle />, color: 'var(--secondary-color)' },
-    { label: 'بقیہ نصاب', value: `${100 - stats.percentComplete}%`, icon: <Clock />, color: '#fbbf24' },
-    { label: 'پیش رفت', value: `${stats.percentComplete}%`, icon: <TrendingUp />, color: 'var(--primary-color)' },
+    { label: 'بقیہ نصاب', value: stats.totalSubjects === 0 ? 'N/A' : `${100 - stats.percentComplete}%`, icon: <Clock />, color: '#fbbf24' },
+    { label: 'پیش رفت', value: stats.totalSubjects === 0 ? 'N/A' : `${stats.percentComplete}%`, icon: <TrendingUp />, color: 'var(--primary-color)' },
   ];
 
   return (
