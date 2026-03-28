@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp, getDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, serverTimestamp, getDoc, doc, deleteDoc } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
-import { GraduationCap, Plus, LogIn, Copy, Check, RefreshCw } from 'lucide-react';
+import { GraduationCap, Plus, LogIn, Copy, Check, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Generate a random 8-char alphanumeric join code
@@ -11,7 +11,7 @@ function generateCode() {
 }
 
 export default function Classes() {
-  const { user, isAdmin, activeClassId, activeClassName, switchClass } = useAuth();
+  const { user, isAdmin, isSuperAdmin, activeClassId, activeClassName, switchClass } = useAuth();
   const [myClasses, setMyClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newClassName, setNewClassName] = useState('');
@@ -83,6 +83,13 @@ export default function Classes() {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(''), 2000);
+  };
+
+  const handleDeleteClass = async (id, name) => {
+    if (!isSuperAdmin) return;
+    if (!window.confirm(`"${name}" کو مکمل طور پر حذف کریں؟ اس کلاس کا تمام ڈیٹا ختم ہو جائے گا۔`)) return;
+    await deleteDoc(doc(db, 'classes', id));
+    fetchMyClasses();
   };
 
   if (!user) {
@@ -161,6 +168,15 @@ export default function Classes() {
                   </div>
                   <h4 style={{ fontSize: '1.5rem', margin: 0 }}>{cls.name}</h4>
                 </div>
+                {isSuperAdmin && (
+                  <button
+                    onClick={() => handleDeleteClass(cls.id, cls.name)}
+                    title="کلاس حذف کریں"
+                    style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', borderRadius: '8px', padding: '0.4rem 0.7rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.9rem' }}
+                  >
+                    <Trash2 size={16} /> حذف
+                  </button>
+                )}
               </div>
 
               {isAdmin && cls.code && (
